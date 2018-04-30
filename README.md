@@ -1,2 +1,2 @@
 # code-from-blog
-a collection of codes use din blog posts
+a collection of codes used in various blog posts
