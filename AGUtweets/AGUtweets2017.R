@@ -18,25 +18,33 @@ dataM <- filter(data, time >= "2017-12-10 00:00:00", time <= "2017-12-17 00:00:0
 #plot hourly tweets during the week
 ggplot(dataM, aes(x=time)) +
   geom_histogram(bins = 168)  + 
-  labs(x= "Day", y = "Tweets/Hr")
+  labs(x= "Day", y = "Tweets/Hr") +
+  labs(title = "Hourly #AGU17 Tweets During the Meeting")
+ggsave("Hourly.pdf")
 
 #subset and plot  just theAGU tweets 
 dataMA <- filter(dataM, from_user == "theAGU")
 
 ggplot(dataMA, aes(x=time)) +
   geom_histogram(bins = 168)  + 
-  labs(x= "Day", y = "Tweets/Hr")
+  labs(x= "Day", y = "Tweets/Hr") +
+  labs(title = "Hourly @theAGU #AGU17 Tweets During the Meeting")
+ggsave("HourlyAGU.pdf")
 
 # subset and plot all nonAGU tweets
 dataMNA <- filter(dataM, from_user != "theAGU")
 
 ggplot(dataMNA, aes(x=time)) +
   geom_histogram(bins = 168)  + 
-  labs(x= "Day", y = "Tweets/Hr")
+  labs(x= "Day", y = "Tweets/Hr") +
+  labs(title = "Hourly non-@theAGU #AGU17 Tweets During the Meeting")
+ggsave("HourlyNonAGU.pdf")
 
 #remove RTs from meeting subset and plot those
 dataMnRT <- filter(dataM, !grepl('RT @', text))
 
 ggplot(dataMnRT, aes(x=time)) +
   geom_histogram(bins = 168)  + 
-  labs(x= "Day", y = "Tweets/Hr")
+  labs(x= "Day", y = "Tweets/Hr")  +
+  labs(title = "Hourly #AGU17 Tweets (no RTs) During the Meeting")
+ggsave("HourlyNoRT.pdf")
