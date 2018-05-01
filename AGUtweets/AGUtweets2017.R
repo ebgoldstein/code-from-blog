@@ -4,19 +4,39 @@
 #figshare. Dataset. https://doi.org/10.6084/m9.figshare.5756514.v1 
 library(tidyverse)
 library(lubridate)
-data <- read.csv("https://ndownloader.figshare.com/files/10141338")
+data <- read_csv("https://ndownloader.figshare.com/files/10141338")
 
-#subset columns i want
-datasubset <- select(data, from_user, time)
+#correct the timestamps
+data <- data  %>% mutate_at(vars(time), dmy_hms)
 
-#reformat the column types and correct the timestamps
-datasubset <- datasubset %>% mutate_at(vars(from_user), as.character)
-datasubset <- datasubset %>% mutate_at(vars(time), dmy_hms)
-
-#mean # of tweets/ person
-
-#distribution of tweets per person 
-
-#plot hourly tweets
+#UTC to US central time
+attributes(data$time)$tzone <- "US/Central" 
 
 #subset for Meeting dates
+dataM <- filter(data, time >= "2017-12-10 00:00:00", time <= "2017-12-17 00:00:00")
+
+#plot hourly tweets during the week
+ggplot(dataM, aes(x=time)) +
+  geom_histogram(bins = 168)  + 
+  labs(x= "Day", y = "Tweets/Hr")
+
+#subset and plot  just theAGU tweets 
+dataMA <- filter(dataM, from_user == "theAGU")
+
+ggplot(dataMA, aes(x=time)) +
+  geom_histogram(bins = 168)  + 
+  labs(x= "Day", y = "Tweets/Hr")
+
+# subset and plot all nonAGU tweets
+dataMNA <- filter(dataM, from_user != "theAGU")
+
+ggplot(dataMNA, aes(x=time)) +
+  geom_histogram(bins = 168)  + 
+  labs(x= "Day", y = "Tweets/Hr")
+
+#remove RTs from meeting subset and plot those
+dataMnRT <- filter(dataM, !grepl('RT @', text))
+
+ggplot(dataMnRT, aes(x=time)) +
+  geom_histogram(bins = 168)  + 
+  labs(x= "Day", y = "Tweets/Hr")
