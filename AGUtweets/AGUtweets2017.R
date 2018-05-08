@@ -4,12 +4,10 @@
 #figshare. Dataset. https://doi.org/10.6084/m9.figshare.5756514.v1 
 library(tidyverse)
 library(lubridate)
-library(tidytext)
-library(stringr)
-AGUtweets <- read_csv("https://ndownloader.figshare.com/files/10141338")
+data <- read_csv("https://ndownloader.figshare.com/files/10141338")
 
 #correct the timestamps
-data <- AGUtweets  %>% mutate_at(vars(time), dmy_hms)
+data <- data  %>% mutate_at(vars(time), dmy_hms)
 
 #UTC to US central time
 attributes(data$time)$tzone <- "US/Central" 
@@ -50,6 +48,7 @@ ggplot(dataMnRT, aes(x=time)) +
   labs(x= "Day", y = "Tweets/Hr")  +
   labs(title = "Hourly #AGU17 Tweets (no RTs) During the Meeting")
 ggsave("HourlyNoRT.pdf")
+<<<<<<< HEAD
 
 
 #break the words out of each tweet
@@ -86,13 +85,3 @@ ggplot(data=tidy_tweets_days, aes(x=Dec)) +
   geom_line(stat='count') + 
   facet_wrap(~ word, nrow = 5, scales="free_y")
 
-=======
-#plot top words 15 words, but by day..
-# add column for 'days'
-tidy_tweets_days  <- mutate(tidy_tweets,ADay = mday(tidy_tweets$time))
-
-#all word freq for dataMNA dataset grouped by day
-frequency_day <- tidy_tweets_days %>%
-  group_by(ADay) %>%
-  count(word,sort = TRUE) 
->>>>>>> origin/master
