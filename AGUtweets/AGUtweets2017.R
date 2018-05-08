@@ -48,8 +48,6 @@ ggplot(dataMnRT, aes(x=time)) +
   labs(x= "Day", y = "Tweets/Hr")  +
   labs(title = "Hourly #AGU17 Tweets (no RTs) During the Meeting")
 ggsave("HourlyNoRT.pdf")
-<<<<<<< HEAD
-
 
 #break the words out of each tweet
 #from tidytext book
@@ -65,8 +63,6 @@ tidy_tweets <- dataMNA %>%
 #all word freq for dataMNA dataset
 frequency <- tidy_tweets %>%
   count(word,sort = TRUE) 
-
-<<<<<<< HEAD
 
 #filter for the top 15 words
 filtered_tidy_tweets <- filter(tidy_tweets, word %in% frequency$word[1:15])
