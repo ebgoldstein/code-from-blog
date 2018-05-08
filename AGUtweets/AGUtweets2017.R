@@ -67,6 +67,7 @@ tidy_tweets <- dataMNA %>%
 frequency <- tidy_tweets %>%
   count(word,sort = TRUE) 
 
+<<<<<<< HEAD
 
 #filter for the top 15 words
 filtered_tidy_tweets <- filter(tidy_tweets, word %in% frequency$word[1:15])
@@ -85,3 +86,13 @@ ggplot(data=tidy_tweets_days, aes(x=Dec)) +
   geom_line(stat='count') + 
   facet_wrap(~ word, nrow = 5, scales="free_y")
 
+=======
+#plot top words 15 words, but by day..
+# add column for 'days'
+tidy_tweets_days  <- mutate(tidy_tweets,ADay = mday(tidy_tweets$time))
+
+#all word freq for dataMNA dataset grouped by day
+frequency_day <- tidy_tweets_days %>%
+  group_by(ADay) %>%
+  count(word,sort = TRUE) 
+>>>>>>> origin/master
