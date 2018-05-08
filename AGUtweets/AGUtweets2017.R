@@ -4,10 +4,12 @@
 #figshare. Dataset. https://doi.org/10.6084/m9.figshare.5756514.v1 
 library(tidyverse)
 library(lubridate)
-data <- read_csv("https://ndownloader.figshare.com/files/10141338")
+library(tidytext)
+library(stringr)
+AGUtweets <- read_csv("https://ndownloader.figshare.com/files/10141338")
 
 #correct the timestamps
-data <- data  %>% mutate_at(vars(time), dmy_hms)
+data <- AGUtweets  %>% mutate_at(vars(time), dmy_hms)
 
 #UTC to US central time
 attributes(data$time)$tzone <- "US/Central" 
@@ -48,3 +50,38 @@ ggplot(dataMnRT, aes(x=time)) +
   labs(x= "Day", y = "Tweets/Hr")  +
   labs(title = "Hourly #AGU17 Tweets (no RTs) During the Meeting")
 ggsave("HourlyNoRT.pdf")
+
+
+#break the words out of each tweet
+#from tidytext book
+replace_reg <- "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https"
+unnest_reg <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
+tidy_tweets <- dataMNA %>% 
+  filter(!str_detect(text, "^RT")) %>%
+  mutate(text = str_replace_all(text, replace_reg, "")) %>%
+  unnest_tokens(word, text, token = "regex", pattern = unnest_reg) %>%
+  filter(!word %in% stop_words$word,
+         str_detect(word, "[a-z]"))
+
+#all word freq for dataMNA dataset
+frequency <- tidy_tweets %>%
+  count(word,sort = TRUE) 
+
+
+#filter for the top 15 words
+filtered_tidy_tweets <- filter(tidy_tweets, word %in% frequency$word[1:15])
+
+#plot top words 15 words, but by day..
+# add column for 'days'
+tidy_tweets_days  <- mutate(filtered_tidy_tweets,Dec = mday(filtered_tidy_tweets$time))
+
+#all word freq for dataMNA dataset grouped by day
+frequency_day <- tidy_tweets_days %>%
+  group_by(Dec) %>%
+  count(word,sort = TRUE) 
+
+#make a plot of use of top words (from freq) by day.
+ggplot(data=tidy_tweets_days, aes(x=Dec)) + 
+  geom_line(stat='count') + 
+  facet_wrap(~ word, nrow = 5, scales="free_y")
+
