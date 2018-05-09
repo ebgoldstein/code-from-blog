@@ -81,3 +81,17 @@ ggplot(data=tidy_tweets_days, aes(x=Dec)) +
   geom_line(stat='count') + 
   facet_wrap(~ word, nrow = 5, scales="free_y")
 
+#bar plot
+tidy_tweets %>%
+count(word, sort = TRUE) %>%
+  filter(n > 200) %>%
+  mutate(word = reorder(word,n)) %>%
+  ggplot(aes(word,n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()
+
+#wordcloud
+tidy_tweets %>%
+  count(word) %>%
+  with(wordcloud(word,n,max.words = 100))
