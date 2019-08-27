@@ -6,12 +6,6 @@ library(lubridate)
 library(tidytext)
 AGUtweetdata <- read_csv("https://ndownloader.figshare.com/files/14884364")
 
-#correct the timestamps
-data <- AGUtweetdata  %>% mutate_at(vars(time), dmy_hms)
-
-#UTC to US central time
-attributes(data$time)$tzone <- "US/Eastern" 
-
 #subset for Meeting dates
 dataM <- filter(AGUtweetdata, time >= "2018-12-09 00:00:00", time <= "2018-12-17 00:00:00")
 
